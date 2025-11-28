@@ -25,6 +25,10 @@ uvicorn app.main:app --reload
 
 Then open http://127.0.0.1:8000/ in your browser and paste text to summarize.
 
+### Environment note
+
+`pytest` is already available in the environment used for these examples. If you run into proxy issues installing other packages (e.g., `fastapi`), try using an existing virtual environment with the dependencies preinstalled or configure your proxy settings before rerunning `pip install -r requirements.txt`.
+
 ## Testing
 
 ```bash
