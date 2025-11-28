@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Project Starter</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="card">
+        <header class="card__header">
+          <p class="eyebrow">AI PROJECT STARTER</p>
+          <h1>Summarize text with a clean FastAPI demo</h1>
+          <p class="lede">
+            Paste any text and get a concise summary. The backend uses FastAPI and a
+            lightweight summarizer so you can swap in an LLM later.
+          </p>
+        </header>
+
+        <form id="summarize-form" class="form">
+          <label for="text">Your text</label>
+          <textarea id="text" name="text" placeholder="Paste text here" required></textarea>
+          <button type="submit">Generate summary</button>
+        </form>
+
+        <section id="result" class="result hidden">
+          <div class="result__meta">
+            <p class="eyebrow">Summary</p>
+            <p class="meta" id="lengths"></p>
+          </div>
+          <p id="summary-text"></p>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      const form = document.getElementById("summarize-form");
+      const result = document.getElementById("result");
+      const summaryText = document.getElementById("summary-text");
+      const lengths = document.getElementById("lengths");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const text = document.getElementById("text").value.trim();
+
+        if (!text) {
+          return;
+        }
+
+        form.classList.add("loading");
+
+        try {
+          const response = await fetch("/summaries", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Request failed");
+          }
+
+          const data = await response.json();
+          summaryText.textContent = data.summary;
+          lengths.textContent = `Original: ${data.original_length} characters · Summary: ${data.reduced_length} characters`;
+          result.classList.remove("hidden");
+        } catch (error) {
+          summaryText.textContent = "We couldn't summarize that text. Please try again.";
+          result.classList.remove("hidden");
+        } finally {
+          form.classList.remove("loading");
+        }
+      });
+    </script>
+  </body>
+</html>

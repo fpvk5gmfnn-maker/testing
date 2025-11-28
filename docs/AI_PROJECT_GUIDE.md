@@ -20,7 +20,7 @@ This guide walks through how to structure, build, and iterate on a small AI-powe
 
 ## 4) Build a Minimal Viable Product (MVP)
 - **Backend**: a lightweight Python service (FastAPI) with a single endpoint that calls the model and returns results.
-- **Frontend** (optional): a simple form that accepts text and shows the model response.
+- **Frontend**: the included `app/templates/index.html` page shows a gradient-styled form that calls `/summaries` via fetch.
 - **Logging**: store prompts, responses, and user feedback (thumbs up/down) to improve later.
 - **Testing**: add smoke tests for the API route and a few golden responses to catch regressions.
 
@@ -53,12 +53,19 @@ This guide walks through how to structure, build, and iterate on a small AI-powe
 - **Testing**: `pytest` for unit tests; `ruff` for linting
 
 ## 10) Example One-Endpoint Starter
-Below is a minimal FastAPI service you can use as a starting point. Replace the `call_llm` stub with a real API call (e.g., OpenAI `chat.completions`).
+The repository now includes a ready-to-run FastAPI app with a styled frontend:
+
+- Start the server with `uvicorn app.main:app --reload`.
+- Visit `http://127.0.0.1:8000/` to see the gradient UI and test summaries.
+- Update `app/summary.py` to call your preferred LLM API instead of the built-in heuristic summarizer.
+
+### Example handler
 
 ```python
 from fastapi import FastAPI
 
 app = FastAPI()
+
 
 def call_llm(prompt: str) -> str:
     # TODO: integrate an LLM API call here
@@ -70,12 +77,6 @@ def summarize(payload: dict):
     text = payload.get("text", "")
     result = call_llm(f"Summarize this for a busy manager: {text}")
     return {"summary": result}
-```
-
-Run locally with:
-
-```bash
-uvicorn app:app --reload
 ```
 
 ## 11) Next Steps for You
